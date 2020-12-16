@@ -55,7 +55,7 @@ const App: FC = () => {
   const [currentCalculation, setCurrentCalculation] = useState<
     Calculation | undefined
   >(
-    localStorage.getItem('currentCalculation') !== 'undefined'
+    localStorage.getItem('currentCalculation') !== null
       ? JSON.parse(localStorage.getItem('currentCalculation')!)
       : undefined
   );
@@ -87,7 +87,6 @@ const App: FC = () => {
   };
 
   const startCalculation = () => {
-    localStorage.clear();
     onTrigger({
       multiplicand: { id: firstMatrix!.id },
       multiplier: { id: secondMatrix!.id },
@@ -99,7 +98,11 @@ const App: FC = () => {
     });
     localStorage.setItem(
       'currentCalculation',
-      JSON.stringify(currentCalculation)
+      JSON.stringify({
+        multiplicand_matrix_id: firstMatrix!.id,
+        multiplier_matrix_id: secondMatrix!.id,
+        totalCalculations: firstMatrix!.rows * secondMatrix!.columns,
+      })
     );
     localStorage.setItem('firstMatrix', JSON.stringify(firstMatrix));
     localStorage.setItem('secondMatrix', JSON.stringify(secondMatrix));
@@ -376,7 +379,7 @@ const Errors = ({ errors }: { errors?: string[] }) => {
       <Typography>
         {errors && errors.length > 0
           ? 'Errors occurred:'
-          : 'No Error occurred so far!'}
+          : 'No error occurred so far!'}
       </Typography>
       {errors &&
         errors.map((error, i) => (

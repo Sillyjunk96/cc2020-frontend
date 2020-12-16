@@ -49,8 +49,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "st": "REACT_APP_ERROR_SQS_URL=https://sqs.us-east-1.amazonaws.com/911911702214/errors REACT_APP_MASTER_SNS_TOPIC_ARN=arn:aws:sns:us-east-1:911911702214:matrixmultiplication REACT_APP_ACCESS_KEY_ID=ASIA5IURMJ3DNHNL7VNM REACT_APP_SECRET_ACCESS_KEY=i6DkpCwXEu/utfOgzn96uClb+v5F75Qgd7oGdKU0 REACT_APP_SESSION_TOKEN=FwoGZXIvYXdzEIL//////////wEaDLPJxcPU4Oh3mTqcTCLLATm6/1mDh5T841LPwgYJzKCDOCLQRQ1PHsEQsO4s5v18wonPXNZTiifxHMgUpTKHbiKMPddLPedyu7EInIvkl7kacLeumQbcYfrQrpjo0f/5ymHr9iBxg3e2J2oWKMzSmDORGgF1YL3tJfxPA+muGMljWuqYIisRm9g9OyI2trdhjCCyKI3SS9c2h4WkU0xDdYLBLoJiIXjaURfQ0a2YQmblGhSR/aEmY7p7GrH48M+guct4P3OiAypax/0yg0gi+TYIosjgrNKSf47mKLvu6P4FMi36mpzviVnnYrnJ8Xy7dD+CaNJABW5N5X1Z0sw3M1OIzDi4Ttf7s47ymzyLUjo= REACT_APP_REGION=us-east-1 REACT_APP_SQS_URL=https://sqs.us-east-1.amazonaws.com/911911702214/results REACT_APP_TOPIC_ARN=arn:aws:sns:us-east-1:911911702214:matrixgenerator npm start"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
