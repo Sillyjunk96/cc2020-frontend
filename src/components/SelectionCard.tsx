@@ -30,6 +30,7 @@ const SelectionCard = (props: SelectionCardProps) => {
     }
 
     if (firstMatrix.columns === secondMatrix.rows) setCalcEnabled(true);
+
   }, [firstMatrix, secondMatrix]);
 
   const classes = useStyles();

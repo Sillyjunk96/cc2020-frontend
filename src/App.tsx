@@ -36,12 +36,18 @@ const StyledContainer = styled(Container)`
 `;
 
 const App: FC = () => {
+
+  const [openMatrixGen, setOpenMatrixGen] = useState<boolean>(false);
+  const [openMatrixSelection, setOpenMatrixSelection] = useState<boolean>(
+    false
+  ); 
   const [generated, setGenerated] = useState<number>(0);
-  const [firstMatrix, setFirstMatrix] = useState<Matrix | undefined>();
-  const [secondMatrix, setSecondMatrix] = useState<Matrix | undefined>();
+  const [firstMatrix, setFirstMatrix] = useState<Matrix | undefined>(localStorage.getItem('firstMatrix') !== null ? JSON.parse(localStorage.getItem('firstMatrix')!) : undefined);
+  const [secondMatrix, setSecondMatrix] = useState<Matrix | undefined>(localStorage.getItem('secondMatrix') !== null ? JSON.parse(localStorage.getItem('secondMatrix')!) : undefined);
   const [currentCalculation, setCurrentCalculation] = useState<
     Calculation | undefined
-  >();
+  >(localStorage.getItem('currentCalculation') !== 'undefined' ? JSON.parse(localStorage.getItem('currentCalculation')!) : undefined);
+
 
   const {
     availableMatrices,
@@ -54,12 +60,8 @@ const App: FC = () => {
     setFirstMatrix(undefined);
     setSecondMatrix(undefined);
     setCurrentCalculation(undefined);
+    localStorage.clear();
   };
-
-  const [openMatrixGen, setOpenMatrixGen] = useState<boolean>(false);
-  const [openMatrixSelection, setOpenMatrixSelection] = useState<boolean>(
-    false
-  );
 
   const selectMatrix = (matrix: Matrix) => {
     if (firstMatrix && !secondMatrix) {
@@ -72,6 +74,7 @@ const App: FC = () => {
   };
 
   const startCalculation = () => {
+    localStorage.clear();
     onTrigger({
       multiplicand: { id: firstMatrix!.id },
       multiplier: { id: secondMatrix!.id },
@@ -81,6 +84,9 @@ const App: FC = () => {
       multiplier_matrix_id: secondMatrix!.id,
       totalCalculations: firstMatrix!.rows * secondMatrix!.columns,
     });
+    localStorage.setItem('currentCalculation', JSON.stringify(currentCalculation));
+    localStorage.setItem('firstMatrix', JSON.stringify(firstMatrix));
+    localStorage.setItem('secondMatrix', JSON.stringify(secondMatrix));
   };
 
   const closeMatrixGen = () => {
@@ -99,6 +105,7 @@ const App: FC = () => {
           let newCalc = { ...currentCalculation };
           newCalc.result_matrix_id = resultMatrices[i].result_matrix_id;
           setCurrentCalculation(newCalc);
+          localStorage.setItem('currentCalculation', JSON.stringify(newCalc));
           return;
         }
       }
