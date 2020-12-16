@@ -167,8 +167,8 @@ const App: FC = () => {
                     }
                   />
                 </Box>
-                <Typography>{`${
-                  currentCalculation?.result_matrix_id
+                <Typography style={{minWidth: '100px'}} align='center'>{`${
+                  (currentCalculation?.result_matrix_id
                     ? ((calculationCache.get(
                         currentCalculation?.result_matrix_id
                       )
@@ -180,7 +180,7 @@ const App: FC = () => {
                         : 0) /
                         currentCalculation.totalCalculations) *
                       100
-                    : 0
+                    : 0).toFixed(2)
                 }%`}</Typography>
               </Box>
               <Box
