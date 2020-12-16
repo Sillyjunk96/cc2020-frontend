@@ -49,7 +49,6 @@ export const useMatrixListener = () => {
     const consumer = Consumer.create({
       queueUrl: process.env.REACT_APP_SQS_URL,
       sqs: sqs,
-      pollingWaitTimeMs: 0,
       handleMessage: async (message) => {
         const msg = JSON.parse(`${message.Body}`).Message;
 
@@ -87,7 +86,7 @@ export const useMatrixListener = () => {
               for (let key of Array.from(chachedCachedResults.keys())) {
                 storageMap.set(key, Array.from(chachedCachedResults.get(key)!));
               }
-              localStorage.setItem(
+              await localStorage.setItem(
                 'chachedResults',
                 JSON.stringify(Array.from(storageMap))
               );

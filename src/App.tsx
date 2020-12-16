@@ -376,7 +376,7 @@ const Errors = ({ errors }: { errors?: string[] }) => {
       <Typography>
         {errors && errors.length > 0
           ? 'Errors occurred:'
-          : 'No Error occurred sofar!'}
+          : 'No Error occurred so far!'}
       </Typography>
       {errors &&
         errors.map((error, i) => (
