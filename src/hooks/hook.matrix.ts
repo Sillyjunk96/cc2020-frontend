@@ -13,7 +13,6 @@ export const useMatrixListener = () => {
   const [calculationCache, setCalculationCache] = useState<
     Map<string, Map<string, number>>
   >(() => {
-
     if (localStorage.getItem('chachedResults')) {
     const map = new Map(JSON.parse(localStorage.getItem('chachedResults')!));
     const outer = new Map();
