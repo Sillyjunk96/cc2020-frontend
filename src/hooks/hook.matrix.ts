@@ -7,21 +7,12 @@ import { EntryResult, ResultMatrix } from '../types/type.result';
 
 export const useMatrixListener = () => {
   const [matrices, setMatrices] = useState<Matrix[]>(() => []);
-  const [relevantCalculations, setRelevantCalculations] = useState<
-    EntryResult[]
-  >(() => []);
   const [resultMatrices, setResultMatrices] = useState<ResultMatrix[]>(
     () => []
   );
   const [calculationCache, setCalculationCache] = useState<
     Map<string, Map<string, number>>
-  >(() => new Map());
-
-  const [multiplicationId, setMultiplicationId] = useState<string>(() => '');
-
-  const setMultiplicationListener = (id: string) => {
-    setMultiplicationId(id);
-  };
+  >(new Map());
 
   const sqs = useMemo(
     () =>
@@ -34,13 +25,8 @@ export const useMatrixListener = () => {
     []
   );
 
-  const cachedMultiplicationId = useMemo(() => multiplicationId, [
-    multiplicationId,
-  ]);
-
   useEffect(() => {
     let cachedM: Matrix[] = [];
-    let cachedRelevantCalculations: EntryResult[] = [];
     let chachedCachedResults: Map<string, Map<string, number>> = new Map();
 
     const consumer = Consumer.create({
@@ -73,26 +59,13 @@ export const useMatrixListener = () => {
               setResultMatrices(newResultM);
               break;
             case MessageType.EntryResult:
-              if (messageInfo.id === cachedMultiplicationId) {
-                console.log('hit!');
-                cachedRelevantCalculations.push({
-                  column_index: messageInfo.column_index,
-                  row_index: messageInfo.row_index,
-                  value: messageInfo.value,
-                });
-                setRelevantCalculations([
-                  ...(cachedRelevantCalculations || []),
-                ]);
-              } else {
-                let arr = chachedCachedResults.get(messageInfo.id) || [];
-                let map = chachedCachedResults.get(messageInfo.id) || new Map();
-                map.set(
-                  `${messageInfo.row_index}-${messageInfo.column_index}`,
-                  messageInfo.value
-                );
-                chachedCachedResults.set(messageInfo.id, map);
-                setCalculationCache(new Map(chachedCachedResults));
-              }
+              let map = chachedCachedResults.get(messageInfo.id) || new Map();
+              map.set(
+                `${messageInfo.row_index}-${messageInfo.column_index}`,
+                messageInfo.value
+              );
+              chachedCachedResults.set(messageInfo.id, map);
+              setCalculationCache(new Map(chachedCachedResults));
               break;
             case MessageType.NewMatrix:
               const matrix = messageInfo.matirx;

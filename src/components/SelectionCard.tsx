@@ -13,6 +13,7 @@ import useStyles from './styles/style.SeceltionCard';
 interface SelectionCardProps {
   firstMatrix?: Matrix;
   secondMatrix?: Matrix;
+  running: boolean;
   onReset: () => void;
   onTriggerCalc: () => void;
 }
@@ -20,7 +21,7 @@ interface SelectionCardProps {
 const SelectionCard = (props: SelectionCardProps) => {
   const [calcEnabled, setCalcEnabled] = useState<boolean>(false);
 
-  const { firstMatrix, secondMatrix, onReset, onTriggerCalc } = props;
+  const { firstMatrix, secondMatrix, running, onReset, onTriggerCalc } = props;
 
   useEffect(() => {
     if (!firstMatrix || !secondMatrix) {
@@ -66,7 +67,7 @@ const SelectionCard = (props: SelectionCardProps) => {
         <Button
           variant="contained"
           color="primary"
-          disabled={!calcEnabled}
+          disabled={!calcEnabled && !running}
           onClick={onTriggerCalc}
         >
           Start

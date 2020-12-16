@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -130,6 +130,7 @@ const App: FC = () => {
             secondMatrix={secondMatrix}
             onReset={resetSelection}
             onTriggerCalc={startCalculation}
+            running={currentCalculation !== undefined}
           />
           {currentCalculation && (
             <>
@@ -181,6 +182,61 @@ const App: FC = () => {
                       100
                     : 0
                 }%`}</Typography>
+              </Box>
+              <Box
+                style={{
+                  marginTop: '50px',
+                  marginBottom: '20px',
+                  maxWidth: '100%',
+                  maxHeight: '500px',
+                  backgroundColor: '#f0f0f0',
+                  overflowY: 'scroll',
+                  overflowX: 'scroll',
+                  borderRadius: '5px',
+                }}
+              >
+                {[...Array(firstMatrix!.rows)].map((_, i) => (
+                  <Box style={{ display: 'flex', flexDirection: 'row' }}>
+                    {[...Array(secondMatrix!.columns)].map((_, n) => {
+                      return (
+                        <Box
+                          style={{
+                            display: 'inline-block',
+                            minHeight: '60px',
+                            minWidth: '60px',
+                            backgroundColor: '#e5e5e5',
+                            borderRadius: '5px',
+                            margin: '5px',
+                          }}
+                        >
+                          <Box
+                            style={{
+                              height: '100%',
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Typography>
+                              {currentCalculation?.result_matrix_id &&
+                              calculationCache.get(
+                                currentCalculation?.result_matrix_id
+                              ) &&
+                              calculationCache
+                                .get(currentCalculation?.result_matrix_id)
+                                ?.get(`${i}-${n}`)
+                                ? calculationCache
+                                    .get(currentCalculation?.result_matrix_id)
+                                    ?.get(`${i}-${n}`)
+                                : ''}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                ))}
               </Box>
             </>
           )}
