@@ -22,6 +22,7 @@ import { useMatrixCalculationTrigger } from './hooks/hook.master';
 import SelectionCard from './components/SelectionCard';
 import { Calculation, Matrix } from './types/type.matrix';
 import SelectionDrawer from './components/SelectionDrawer';
+import { useErrorListener } from './hooks/hook.error';
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -36,18 +37,30 @@ const StyledContainer = styled(Container)`
 `;
 
 const App: FC = () => {
-
   const [openMatrixGen, setOpenMatrixGen] = useState<boolean>(false);
   const [openMatrixSelection, setOpenMatrixSelection] = useState<boolean>(
     false
-  ); 
+  );
   const [generated, setGenerated] = useState<number>(0);
-  const [firstMatrix, setFirstMatrix] = useState<Matrix | undefined>(localStorage.getItem('firstMatrix') !== null ? JSON.parse(localStorage.getItem('firstMatrix')!) : undefined);
-  const [secondMatrix, setSecondMatrix] = useState<Matrix | undefined>(localStorage.getItem('secondMatrix') !== null ? JSON.parse(localStorage.getItem('secondMatrix')!) : undefined);
+  const [firstMatrix, setFirstMatrix] = useState<Matrix | undefined>(
+    localStorage.getItem('firstMatrix') !== null
+      ? JSON.parse(localStorage.getItem('firstMatrix')!)
+      : undefined
+  );
+  const [secondMatrix, setSecondMatrix] = useState<Matrix | undefined>(
+    localStorage.getItem('secondMatrix') !== null
+      ? JSON.parse(localStorage.getItem('secondMatrix')!)
+      : undefined
+  );
   const [currentCalculation, setCurrentCalculation] = useState<
     Calculation | undefined
-  >(localStorage.getItem('currentCalculation') !== 'undefined' ? JSON.parse(localStorage.getItem('currentCalculation')!) : undefined);
+  >(
+    localStorage.getItem('currentCalculation') !== 'undefined'
+      ? JSON.parse(localStorage.getItem('currentCalculation')!)
+      : undefined
+  );
 
+  const { errors } = useErrorListener();
 
   const {
     availableMatrices,
@@ -84,7 +97,10 @@ const App: FC = () => {
       multiplier_matrix_id: secondMatrix!.id,
       totalCalculations: firstMatrix!.rows * secondMatrix!.columns,
     });
-    localStorage.setItem('currentCalculation', JSON.stringify(currentCalculation));
+    localStorage.setItem(
+      'currentCalculation',
+      JSON.stringify(currentCalculation)
+    );
     localStorage.setItem('firstMatrix', JSON.stringify(firstMatrix));
     localStorage.setItem('secondMatrix', JSON.stringify(secondMatrix));
   };
@@ -137,7 +153,7 @@ const App: FC = () => {
             secondMatrix={secondMatrix}
             onReset={resetSelection}
             onTriggerCalc={startCalculation}
-            running={!!(currentCalculation)}
+            running={!!currentCalculation}
           />
           {currentCalculation && (
             <>
@@ -174,21 +190,21 @@ const App: FC = () => {
                     }
                   />
                 </Box>
-                <Typography style={{minWidth: '100px'}} align='center'>{`${
-                  (currentCalculation?.result_matrix_id
-                    ? ((calculationCache.get(
-                        currentCalculation?.result_matrix_id
-                      )
-                        ? Array.from(
-                            calculationCache
-                              .get(currentCalculation?.result_matrix_id)!
-                              .keys()
-                          ).length
-                        : 0) /
-                        currentCalculation.totalCalculations) *
-                      100
-                    : 0).toFixed(2)
-                }%`}</Typography>
+                <Typography
+                  style={{ minWidth: '100px' }}
+                  align="center"
+                >{`${(currentCalculation?.result_matrix_id
+                  ? ((calculationCache.get(currentCalculation?.result_matrix_id)
+                      ? Array.from(
+                          calculationCache
+                            .get(currentCalculation?.result_matrix_id)!
+                            .keys()
+                        ).length
+                      : 0) /
+                      currentCalculation.totalCalculations) *
+                    100
+                  : 0
+                ).toFixed(2)}%`}</Typography>
               </Box>
               <Box
                 style={{
@@ -203,10 +219,14 @@ const App: FC = () => {
                 }}
               >
                 {[...Array(firstMatrix!.rows)].map((_, i) => (
-                  <Box style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Box
+                    key={`outerMatrixContainer-${i}`}
+                    style={{ display: 'flex', flexDirection: 'row' }}
+                  >
                     {[...Array(secondMatrix!.columns)].map((_, n) => {
                       return (
                         <Box
+                          key={`matrixEntry-${n}`}
                           style={{
                             display: 'inline-block',
                             minHeight: '60px',
@@ -245,6 +265,7 @@ const App: FC = () => {
                   </Box>
                 ))}
               </Box>
+              <Errors errors={errors} />
             </>
           )}
         </Box>
@@ -346,6 +367,36 @@ const MatrixGenModal = ({
         </DialogActions>
       </form>
     </Dialog>
+  );
+};
+
+const Errors = ({ errors }: { errors?: string[] }) => {
+  return (
+    <Box style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Typography>
+        {errors && errors.length > 0
+          ? 'Errors occurred:'
+          : 'No Error occurred sofar!'}
+      </Typography>
+      {errors &&
+        errors.map((error, i) => (
+          <Box
+            key={`error-${i}`}
+            style={{
+              width: '100%',
+              minHeight: '30px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              background: '#ff9999',
+              borderRadius: '5px',
+              marginBottom: '10px',
+            }}
+          >
+            <Typography>{error}</Typography>
+          </Box>
+        ))}
+    </Box>
   );
 };
 

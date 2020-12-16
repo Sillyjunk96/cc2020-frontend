@@ -3,7 +3,7 @@ import { Matrix, MatrixInput } from '../types/type.matrix';
 import * as AWS from 'aws-sdk';
 import { Consumer } from 'sqs-consumer';
 import { MessageType } from '../types/type.message';
-import { EntryResult, ResultMatrix } from '../types/type.result';
+import { ResultMatrix } from '../types/type.result';
 
 export const useMatrixListener = () => {
   const [matrices, setMatrices] = useState<Matrix[]>(() => []);
@@ -14,17 +14,17 @@ export const useMatrixListener = () => {
     Map<string, Map<string, number>>
   >(() => {
     if (localStorage.getItem('chachedResults')) {
-    const map = new Map(JSON.parse(localStorage.getItem('chachedResults')!));
-    const outer = new Map();
-    for (let key of Array.from(map.keys())) {
-      const inner = new Map();
+      const map = new Map(JSON.parse(localStorage.getItem('chachedResults')!));
+      const outer = new Map();
+      for (let key of Array.from(map.keys())) {
+        const inner = new Map();
         for (let e of map.get(key) as any[]) {
           inner.set(e[0], e[1]);
         }
-      outer.set(key, inner);
+        outer.set(key, inner);
+      }
+      return outer;
     }
-    return outer;
-  }
     return new Map();
   });
 
@@ -41,11 +41,15 @@ export const useMatrixListener = () => {
 
   useEffect(() => {
     let cachedM: Matrix[] = [];
-    let chachedCachedResults: Map<string, Map<string, number>> = calculationCache;
+    let chachedCachedResults: Map<
+      string,
+      Map<string, number>
+    > = calculationCache;
 
     const consumer = Consumer.create({
       queueUrl: process.env.REACT_APP_SQS_URL,
       sqs: sqs,
+      pollingWaitTimeMs: 0,
       handleMessage: async (message) => {
         const msg = JSON.parse(`${message.Body}`).Message;
 
@@ -83,7 +87,10 @@ export const useMatrixListener = () => {
               for (let key of Array.from(chachedCachedResults.keys())) {
                 storageMap.set(key, Array.from(chachedCachedResults.get(key)!));
               }
-              localStorage.setItem('chachedResults', JSON.stringify(Array.from(storageMap)));
+              localStorage.setItem(
+                'chachedResults',
+                JSON.stringify(Array.from(storageMap))
+              );
               setCalculationCache(new Map(chachedCachedResults));
               break;
             case MessageType.NewMatrix:
