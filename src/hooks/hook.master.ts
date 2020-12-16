@@ -13,10 +13,6 @@ export const useMatrixCalculationTrigger = () => {
   }, []);
 
   const onTrigger = (input: MasterTrigger) => () => {
-    console.log(
-      `{"multiplicand": {"id": "${input.multiplicand.id}"}, "multiplier": {"id": "${input.multiplier.id}"}}`
-    );
-
     sns
       .publish({
         TopicArn: process.env.REACT_APP_MASTER_SNS_TOPIC_ARN,
@@ -24,7 +20,7 @@ export const useMatrixCalculationTrigger = () => {
       })
       .promise();
 
-    console.log('sent');
+    console.log('multiplication started!');
   };
 
   return onTrigger;

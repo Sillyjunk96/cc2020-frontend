@@ -95,6 +95,7 @@ const EntryRow = ({
   return (
     <Box
       style={{
+        cursor: 'pointer',
         width: '97%',
         minHeight: '80px',
         backgroundColor: bg,

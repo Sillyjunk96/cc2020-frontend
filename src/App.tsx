@@ -130,7 +130,7 @@ const App: FC = () => {
             secondMatrix={secondMatrix}
             onReset={resetSelection}
             onTriggerCalc={startCalculation}
-            running={currentCalculation !== undefined}
+            running={!!(currentCalculation)}
           />
           {currentCalculation && (
             <>

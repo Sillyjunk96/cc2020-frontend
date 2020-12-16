@@ -67,7 +67,7 @@ const SelectionCard = (props: SelectionCardProps) => {
         <Button
           variant="contained"
           color="primary"
-          disabled={!calcEnabled && !running}
+          disabled={!calcEnabled || running}
           onClick={onTriggerCalc}
         >
           Start
